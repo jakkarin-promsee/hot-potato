@@ -1,8 +1,10 @@
 # 🥔 Hot Potato
 
-**Teachers create interactive lessons. Students read, think, answer, and talk with an AI tutor.**
+**Teacher-led learning materials, an AI study companion, and room for every student to think out loud.**
 
-Hot Potato is built for Thai learners who may be far from good schools. A teacher writes a lesson, adds questions, and chooses how its tutor should help. Anyone can read a public lesson, answer, and ask the tutor without signing in. An account adds saved answers, history, and teacher tools.
+Many students can read a handout but have no one available to ask *why*, test an idea with, or continue a conversation after an answer. That gap is wider for learners with limited access to teachers and tutoring. Hot Potato helps them practice critical thinking through teacher-authored lessons, questions that invite reasoning, and an AI study companion they can talk to freely.
+
+**The teacher owns the material and the learning direction.** Teachers write or bring in their existing notes and worksheets, decide which AI suggestions to accept, and set how the tutor should respond for each lesson. The AI helps a teacher turn pasted material into a structured web lesson; for students, it is a friendly partner for open-ended questions and discussion, not the author of the curriculum. The Thai-first, phone-first student interface is designed so people with little tech experience can start reading and asking without an account.
 
 **[Open the showcase](https://hot-potato-client.vercel.app/)** · [Student walkthrough](https://hot-potato-client.vercel.app/guide/learning) · [Teacher walkthrough](https://hot-potato-client.vercel.app/guide/creating)
 
@@ -12,13 +14,13 @@ This README is the **single entrance** to the product and the codebase. Start wi
 
 ## Use cases
 
-Hot Potato has two connected journeys. Teachers author the material and guide the tutor; students learn from that same material on a phone or computer. The [client README](https://github.com/Jakkarin-Promsee/hot-potato-client#use-cases) contains every captured guide scene, while this page shows the main journey end to end.
+Hot Potato has two connected journeys. Teachers own the material, questions, and tutor guidance; students read it, try ideas, and talk with the AI companion on a phone or computer. The [client README](https://github.com/Jakkarin-Promsee/hot-potato-client#use-cases) contains every captured guide scene, while this page shows the main journey end to end.
 
 The interface is Thai-first and can be switched to English. Screenshots show the Thai interface. They were captured at 2× resolution with Playwright from the running client and its seeded guide lesson. The landing image was recaptured from the current UI; the other scenes come from the client's [`capture-guide.mjs`](https://github.com/Jakkarin-Promsee/hot-potato-client/blob/main/scripts/capture-guide.mjs) workflow.
 
 ### Student: find a lesson and start reading
 
-Open **Explore**, search for a public lesson, and select its card. Bookmark a lesson on the current device for later. The viewer keeps the teacher's text, media, and questions together. Public lessons work without an account.
+Open **Explore**, search for a public lesson, and select its card. Bookmark a lesson on the current device for later. The viewer keeps the teacher's text, media, and questions together. The student flow uses a Thai-first, phone-first interface with clear steps and no required sign-in for public lessons or AI chat—important for learners who are new to digital tools.
 
 | Find a lesson | Read it |
 | --- | --- |
@@ -26,7 +28,7 @@ Open **Explore**, search for a public lesson, and select its card. Bookmark a le
 
 ### Student: answer, get feedback, and ask more
 
-Questions can be multiple choice, written, drag to fill, or typed fill. Submit an answer to receive contextual feedback. Follow-up suggestions and the **Ask AI** button turn a lesson into a conversation. The tutor is designed to encourage reasoning rather than shame an incorrect answer. The server loads the lesson itself to ground each AI reply.
+Questions can be multiple choice, written, drag to fill, or typed fill. Submit an answer to receive contextual feedback. Follow-up suggestions and the **Ask AI** button turn a lesson into a conversation: students can ask what confused them, test an idea, or explore a related topic instead of stopping at a right/wrong verdict. The tutor is designed to encourage reasoning rather than shame an incorrect answer. The server loads the teacher's lesson to ground its replies, while the teacher controls whether it should stay within that lesson or discuss related general knowledge.
 
 | Answer a question | Read feedback | Ask the tutor |
 | --- | --- | --- |
@@ -52,7 +54,9 @@ With an account, previously opened lessons appear in **History** and submitted a
 
 ### Teacher: build and publish a lesson
 
-Sign in, create a lesson, then write in the desktop editor. Add rich text, images, drawings, formulas, and question blocks. The document autosaves; the same blocks render in the student viewer. The AI copilot can propose an outline, draft, questions, and a review; the teacher previews and accepts suggestions before they enter the document. At publication, choose **public**, **link-only**, or **private** access and configure the lesson's tutor guidance.
+Sign in, create a lesson, then write in the desktop editor. Add rich text, images, drawings, formulas, and question blocks. To bring existing teaching material online with less manual rework, paste text from an old worksheet, Word document, or notes into **Import existing material**; the AI proposes a lesson structure and questions. It does not scan paper directly. The teacher previews and accepts every suggestion before it enters the document. The document autosaves, and the same blocks render in the student viewer.
+
+At publication, choose **public**, **link-only**, or **private** access. The teacher can also guide the tutor's response style per lesson: add a persona note and custom guidelines, choose whether it may give direct answers, and decide whether it can discuss related general knowledge. The teacher remains responsible for what is taught; the AI helps prepare it and helps students think through it.
 
 **Write the lesson:**
 
@@ -70,7 +74,7 @@ Sign in, create a lesson, then write in the desktop editor. Add rich text, image
 
 <img src="docs/screenshots/creating-07b-question-creator.webp" alt="Question creator" width="360">
 
-**Use the AI copilot:**
+**Use the AI copilot to structure existing material, draft, and review:**
 
 <img src="docs/screenshots/creating-08a-ai-hub.webp" alt="Teacher AI tools" width="760">
 
@@ -78,7 +82,7 @@ Sign in, create a lesson, then write in the desktop editor. Add rich text, image
 
 <img src="docs/screenshots/creating-09a-critic.webp" alt="AI lesson critique" width="760">
 
-**Set publishing options and share:**
+**Set the tutor's guidance, publish, and share:**
 
 <img src="docs/screenshots/creating-09b-publish-modal.webp" alt="Publish dialog" width="760">
 
@@ -142,6 +146,8 @@ The full route/guard table is in the [server README](https://github.com/Jakkarin
 3. **The TipTap document is the lesson's source of truth.** Question definitions, canvas state, formulas, and other block data belong in node attributes so autosave and the read-only viewer share the same document.
 4. **The server owns AI lesson context.** The browser sends an ID and the current turn; `lessonContext.service.ts` loads and serializes the trusted lesson. Do not send a client-built copy of lesson text as the AI source.
 5. **Teacher AI requires preview and acceptance.** The copilot proposes content; the teacher decides what enters the editor. Validate generated question data before insertion.
+6. **Keep the student path usable for low-tech learners.** Preserve clear, phone-first navigation, Thai-first copy, visible feedback, and the ability to begin without an account.
+7. **The teacher controls instructional intent and the tutor's style.** Imported material and AI drafts require teacher approval; per-lesson `agent_settings` shape the tutor's voice, directness, scope, and guidelines.
 
 These rules are explained with failure modes in [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md), with guard placement in [`docs/security-model.md`](docs/security-model.md), and with request lifecycles in [`docs/data-flow.md`](docs/data-flow.md).
 
