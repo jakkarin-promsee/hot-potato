@@ -243,3 +243,7 @@ README screenshots come from the client's Playwright guide pipeline (`client/scr
 | [Client README](https://github.com/Jakkarin-Promsee/hot-potato-client#readme) / [Server README](https://github.com/Jakkarin-Promsee/hot-potato-server#readme) | Repo-specific commands, scripts, API details, and all client screenshots |
 
 The core teacher and student flows are implemented. The [showcase](https://hot-potato-client.vercel.app/) is the place to try the interface; local source and configuration remain the authority for implementation details.
+
+## License
+
+Original code and documentation authored by Jakkarin Promsee are licensed under the [MIT License](LICENSE). Third-party code, assets, datasets, and other materials are not covered by this license; their original terms apply.
